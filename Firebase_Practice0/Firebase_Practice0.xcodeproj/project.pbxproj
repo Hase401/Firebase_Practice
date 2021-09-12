@@ -18,6 +18,8 @@
 		BA5A84F826EB693E006298B6 /* TodoListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5A84F726EB693E006298B6 /* TodoListViewController.swift */; };
 		BA5A84FA26EB6966006298B6 /* TodoAddViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5A84F926EB6966006298B6 /* TodoAddViewController.swift */; };
 		BA5A84FC26EB6977006298B6 /* TodoEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5A84FB26EB6977006298B6 /* TodoEditViewController.swift */; };
+		BA5A850226ECECB8006298B6 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5A850126ECECB8006298B6 /* User.swift */; };
+		BA5A850426EDCDC1006298B6 /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5A850326EDCDC1006298B6 /* Todo.swift */; };
 		FB2264101396ABE6E6E8025E /* Pods_Firebase_Practice0.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29075DB20C8CCEFC0AC530C5 /* Pods_Firebase_Practice0.framework */; };
 /* End PBXBuildFile section */
 
@@ -37,6 +39,8 @@
 		BA5A84F726EB693E006298B6 /* TodoListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListViewController.swift; sourceTree = "<group>"; };
 		BA5A84F926EB6966006298B6 /* TodoAddViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoAddViewController.swift; sourceTree = "<group>"; };
 		BA5A84FB26EB6977006298B6 /* TodoEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoEditViewController.swift; sourceTree = "<group>"; };
+		BA5A850126ECECB8006298B6 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		BA5A850326EDCDC1006298B6 /* Todo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Todo.swift; sourceTree = "<group>"; };
 		CF5F0E3EBC96BEC4560B08A5 /* Pods-Firebase_Practice0.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Firebase_Practice0.release.xcconfig"; path = "Target Support Files/Pods-Firebase_Practice0/Pods-Firebase_Practice0.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -90,6 +94,7 @@
 		BA5A84DA26EB61CA006298B6 /* Firebase_Practice0 */ = {
 			isa = PBXGroup;
 			children = (
+				BA5A850026ECECAF006298B6 /* Model */,
 				BA5A84F626EB692E006298B6 /* ViewController */,
 				BA5A84F326EB6760006298B6 /* Utility */,
 				BA5A84DB26EB61CA006298B6 /* AppDelegate.swift */,
@@ -120,6 +125,15 @@
 				BA5A84FB26EB6977006298B6 /* TodoEditViewController.swift */,
 			);
 			path = ViewController;
+			sourceTree = "<group>";
+		};
+		BA5A850026ECECAF006298B6 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				BA5A850126ECECB8006298B6 /* User.swift */,
+				BA5A850326EDCDC1006298B6 /* Todo.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -237,10 +251,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BA5A850426EDCDC1006298B6 /* Todo.swift in Sources */,
 				BA5A84FA26EB6966006298B6 /* TodoAddViewController.swift in Sources */,
 				BA5A84F526EB678F006298B6 /* FuncUtility.swift in Sources */,
 				BA5A84FC26EB6977006298B6 /* TodoEditViewController.swift in Sources */,
 				BA5A84E026EB61CA006298B6 /* ViewController.swift in Sources */,
+				BA5A850226ECECB8006298B6 /* User.swift in Sources */,
 				BA5A84DC26EB61CA006298B6 /* AppDelegate.swift in Sources */,
 				BA5A84DE26EB61CA006298B6 /* SceneDelegate.swift in Sources */,
 				BA5A84F826EB693E006298B6 /* TodoListViewController.swift in Sources */,
