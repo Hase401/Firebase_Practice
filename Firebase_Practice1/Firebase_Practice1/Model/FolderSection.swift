@@ -31,12 +31,11 @@ final class FolderSection: NSObject {
         self.id = doc.documentID
 
         let data = doc.data() // !が付くQueryDocumentSnapshotにするとDocumentSnapshotになる
-        self.year = data["year"] as! Int // これめちゃくちゃ危険らしい
-        self.totalDayInYearSection = data["totalDayInYearSection"] as! Int
-        self.isShowed = data["isShowed"] as! Bool // これもめちゃくちゃ危険らしい
+        self.year = data["year"] as? Int ?? 0
+        self.totalDayInYearSection = data["totalDayInYearSection"] as? Int ?? 0
+        self.isShowed = data["isShowed"] as? Bool ?? true
         let createAtTimestamp = data["createcAt"] as? Timestamp
         let updateAtTimestamp = data["updateAt"] as? Timestamp
-
         if let createAt = createAtTimestamp,
            let updateAt = updateAtTimestamp {
             self.createAt = createAt.dateValue() // Timestamp型からDate型に変換
@@ -48,7 +47,7 @@ final class FolderSection: NSObject {
     }
 
     static func createFolderSectionToFirestore(year: Int,
-                                               currentVC: UIViewController) {
+                                               completionAction: @escaping (Error?) -> Void) {
         if let user = Auth.auth().currentUser {
             let createTime = FieldValue.serverTimestamp()
             // 【曖昧】コレクションはこれで定義して理想通りになっているか失敗しててもいいから実際にコンソールで検証するべきだな。。。
@@ -61,13 +60,7 @@ final class FolderSection: NSObject {
             ],
             merge: true, // trueならデータがある時はupdateを行い、データがない場合はcreateを行う
             completion: { error in
-                if let error = error {
-                    FuncUtility.showErrorDialog(error: error,
-                                                title: "FolderSectionの作成失敗",
-                                                currentVC: currentVC)
-                } else {
-                    print("FolderSectionの作成成功")
-                }
+                completionAction(error)
             })
         }
     }
@@ -83,13 +76,39 @@ final class FolderSection: NSObject {
     }
 
     static func isShowedUpdate(folderSection: FolderSection,
-                             complectionAction: @escaping (Error?) -> Void) {
+                             completionAction: @escaping (Error?) -> Void) {
         if let user = Auth.auth().currentUser {
             Firestore.firestore().collection("Users/\(user.uid)/FolderSections").document(folderSection.id).updateData([
                 "isShowed": !folderSection.isShowed,
                 "updateAt": FieldValue.serverTimestamp()
             ], completion: { error in
-                complectionAction(error)
+                completionAction(error)
+            })
+        }
+    }
+
+    // これはupdateとして必要
+    static func calculateTotalDayInYearSection(folderSection: FolderSection,
+                                               folderDates: [FolderDate], // これのtotalDayInMonthをfor文で回して計算すればいいかも！
+//                                               totalDay: Int,
+                                               completionAction: @escaping (Error?) -> Void) {
+        print("folderDates:", folderDates)
+        print("folderDates.count:", folderDates.count)
+        if folderDates.count == 0 {
+            return // もともとtotalDayInYearSectionは0だから
+        }
+        if let user = Auth.auth().currentUser {
+            var totalDay: Int = 0
+            for i in 0...folderDates.count-1 {
+                totalDay += folderDates[i].totalDayInMonth
+            }
+            print("totalDay:", totalDay)
+
+            Firestore.firestore().collection("Users/\(user.uid)/FolderSections").document(folderSection.id).updateData([
+                "totalDayInYearSection": totalDay,
+                "updateAt": FieldValue.serverTimestamp()
+            ], completion: { error in
+                completionAction(error)
             })
         }
     }
