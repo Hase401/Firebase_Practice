@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		58E3F0F4360147890A91E0D8 /* Pods_Firebase_Practice1.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD862F983FD77169962CC75E /* Pods_Firebase_Practice1.framework */; };
+		BA08251226F9C1B4004DB0F4 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA08251126F9C1B3004DB0F4 /* NetworkError.swift */; };
 		BA5A851226EED500006298B6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5A851126EED500006298B6 /* AppDelegate.swift */; };
 		BA5A851626EED500006298B6 /* FolderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5A851526EED500006298B6 /* FolderViewController.swift */; };
 		BA5A851B26EED505006298B6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA5A851A26EED505006298B6 /* Assets.xcassets */; };
@@ -33,10 +34,13 @@
 		BA5A856426EF7F55006298B6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BA5A856326EF7F55006298B6 /* GoogleService-Info.plist */; };
 		BA65E2DF26F0B39A00B39CA2 /* FuncUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA65E2DE26F0B39A00B39CA2 /* FuncUtility.swift */; };
 		BA65E2E126F173D800B39CA2 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA65E2E026F173D800B39CA2 /* User.swift */; };
+		BA70C6BA26F9C78E00DB6C7C /* FolderSectionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA70C6B926F9C78E00DB6C7C /* FolderSectionRepository.swift */; };
+		BA70C6BC26F9E1C600DB6C7C /* FolderDateRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA70C6BB26F9E1C600DB6C7C /* FolderDateRepository.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		44724084EECFFCB4F422F03A /* Pods-Firebase_Practice1.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Firebase_Practice1.debug.xcconfig"; path = "Target Support Files/Pods-Firebase_Practice1/Pods-Firebase_Practice1.debug.xcconfig"; sourceTree = "<group>"; };
+		BA08251126F9C1B3004DB0F4 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		BA5A850E26EED500006298B6 /* Firebase_Practice1.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Firebase_Practice1.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA5A851126EED500006298B6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BA5A851526EED500006298B6 /* FolderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderViewController.swift; sourceTree = "<group>"; };
@@ -64,6 +68,8 @@
 		BA5A856326EF7F55006298B6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		BA65E2DE26F0B39A00B39CA2 /* FuncUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuncUtility.swift; sourceTree = "<group>"; };
 		BA65E2E026F173D800B39CA2 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		BA70C6B926F9C78E00DB6C7C /* FolderSectionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderSectionRepository.swift; sourceTree = "<group>"; };
+		BA70C6BB26F9E1C600DB6C7C /* FolderDateRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderDateRepository.swift; sourceTree = "<group>"; };
 		BD862F983FD77169962CC75E /* Pods_Firebase_Practice1.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Firebase_Practice1.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F1B7AAF4046ABCF1EC1CAE26 /* Pods-Firebase_Practice1.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Firebase_Practice1.release.xcconfig"; path = "Target Support Files/Pods-Firebase_Practice1/Pods-Firebase_Practice1.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -88,6 +94,30 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		BA08250E26F9C0CB004DB0F4 /* Entity */ = {
+			isa = PBXGroup;
+			children = (
+				BA08251026F9C13D004DB0F4 /* Response */,
+				BA08250F26F9C137004DB0F4 /* Error */,
+			);
+			path = Entity;
+			sourceTree = "<group>";
+		};
+		BA08250F26F9C137004DB0F4 /* Error */ = {
+			isa = PBXGroup;
+			children = (
+				BA08251126F9C1B3004DB0F4 /* NetworkError.swift */,
+			);
+			path = Error;
+			sourceTree = "<group>";
+		};
+		BA08251026F9C13D004DB0F4 /* Response */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Response;
+			sourceTree = "<group>";
+		};
 		BA5A850526EED500006298B6 = {
 			isa = PBXGroup;
 			children = (
@@ -109,6 +139,8 @@
 		BA5A851026EED500006298B6 /* Firebase_Practice1 */ = {
 			isa = PBXGroup;
 			children = (
+				BA70C6B826F9C77100DB6C7C /* Repository */,
+				BA08250E26F9C0CB004DB0F4 /* Entity */,
 				BA65E2DD26F0B38B00B39CA2 /* Utility */,
 				BA5A852526EED52F006298B6 /* Model */,
 				BA5A852626EED537006298B6 /* ViewController */,
@@ -125,9 +157,9 @@
 		BA5A852526EED52F006298B6 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				BA65E2E026F173D800B39CA2 /* User.swift */,
 				BA5A853526EED6D0006298B6 /* ThemeColor.swift */,
 				BA5A852D26EED63D006298B6 /* TimeArray.swift */,
-				BA65E2E026F173D800B39CA2 /* User.swift */,
 				BA5A852B26EED622006298B6 /* FolderSection.swift */,
 				BA5A852F26EED654006298B6 /* FolderDate.swift */,
 				BA5A853126EED672006298B6 /* FileDate.swift */,
@@ -209,6 +241,15 @@
 				BA65E2DE26F0B39A00B39CA2 /* FuncUtility.swift */,
 			);
 			path = Utility;
+			sourceTree = "<group>";
+		};
+		BA70C6B826F9C77100DB6C7C /* Repository */ = {
+			isa = PBXGroup;
+			children = (
+				BA70C6B926F9C78E00DB6C7C /* FolderSectionRepository.swift */,
+				BA70C6BB26F9E1C600DB6C7C /* FolderDateRepository.swift */,
+			);
+			path = Repository;
 			sourceTree = "<group>";
 		};
 		BCE1602EF19D1ADE7E7EC519 /* Pods */ = {
@@ -345,8 +386,11 @@
 				BA5A853226EED672006298B6 /* FileDate.swift in Sources */,
 				BA5A851226EED500006298B6 /* AppDelegate.swift in Sources */,
 				BA5A855D26EF1B14006298B6 /* FileTableViewCell.swift in Sources */,
+				BA70C6BC26F9E1C600DB6C7C /* FolderDateRepository.swift in Sources */,
 				BA5A855526EF1824006298B6 /* FolderTableViewCell.swift in Sources */,
 				BA65E2DF26F0B39A00B39CA2 /* FuncUtility.swift in Sources */,
+				BA70C6BA26F9C78E00DB6C7C /* FolderSectionRepository.swift in Sources */,
+				BA08251226F9C1B4004DB0F4 /* NetworkError.swift in Sources */,
 				BA5A854426EED90C006298B6 /* FileViewController.swift in Sources */,
 				BA5A852E26EED63D006298B6 /* TimeArray.swift in Sources */,
 				BA5A852C26EED622006298B6 /* FolderSection.swift in Sources */,

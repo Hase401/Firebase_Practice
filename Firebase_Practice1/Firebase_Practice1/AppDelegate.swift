@@ -7,8 +7,6 @@
 
 import UIKit
 import Firebase
-//import FirebaseAuth
-//import IQKeyboardManagerSwift
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -18,8 +16,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         FirebaseApp.configure()
-//        IQKeyboardManager.shared.enable = true
-        User.registerUserToAuth()
+        Auth.auth().signInAnonymously { authResult, error in
+            if let user = authResult?.user {
+                print("匿名ユーザーの新規作成成功！" + user.uid)
+            } else if let error = error {
+                print("匿名ユーザーの新規作成失敗。" + error.localizedDescription)
+            }
+        }
 
         let window = UIWindow(frame: UIScreen.main.bounds)
         self.window = window
