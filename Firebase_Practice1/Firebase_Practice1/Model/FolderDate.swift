@@ -19,7 +19,7 @@ struct FolderDate: Codable {
     var updatedAt: Timestamp?
 
     enum CodingKeys: String, CodingKey {
-      case id
+//      case id
       case year
       case month
       case totalDayInMonth
@@ -30,6 +30,7 @@ struct FolderDate: Codable {
     // エンコード処理
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+//        try container.encode(self.id, forKey: .id)
         try container.encode(self.year, forKey: .year)
         try container.encode(self.month, forKey: .month)
         try container.encode(self.totalDayInMonth, forKey: .totalDayInMonth)

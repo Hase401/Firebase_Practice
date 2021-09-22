@@ -24,7 +24,7 @@ final class FolderViewController: UIViewController {
     private let folderSectionRepository = FolderSectionRepositroy()
     private let folderDateRepository = FolderDateRepository()
 
-    private var folderSectionDocumentReferenceId: String?
+//    private var folderSectionDocumentReferenceId: String?
 
     private var yearArrayChoosed: [Int] = []
     private let monthArray = TimeArray.monthArray
@@ -103,6 +103,7 @@ private extension FolderViewController {
             guard let self = self else { return }
             switch response {
             case .success(let folderDateDictionary):
+                print("folderDateDictionary:", folderDateDictionary)
                 self.currentFolderDateDictionary = folderDateDictionary
                 self.tableView.reloadData()
             case .failure(let error):
@@ -378,15 +379,17 @@ extension FolderViewController: UITableViewDelegate {
     }
 
     @objc func headerTapped(sender: UITapGestureRecognizer) {
-        guard let section = sender.view?.tag else {
-            return
-        }
+        print("HeaderViewTapped")
+        guard let section = sender.view?.tag else { return }
+        print("HeaderViewTapped")
         // folderSectionのプロパティにidを入れたので削除
 //        guard let documentReferenceId = folderSectionDocumentReferenceId else {
 //            return
 //        }
         // 【パターン①】documentIdをVCで管理する場合
+        print("folderSection.isShowed:", folderSections[section].isShowed)
         folderSections[section].isShowed.toggle()
+        print("folderSection.isShowed:", folderSections[section].isShowed)
         // isShowedの変更をFirestoreに更新する
         folderSectionRepository.toggleIsShowed(folderSection: folderSections[section]) { [weak self] response in
             guard let self = self else { return }
