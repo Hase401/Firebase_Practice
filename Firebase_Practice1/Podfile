@@ -8,6 +8,7 @@ target 'Firebase_Practice1' do
   pod 'Firebase/Core'
   pod 'Firebase/Auth'
   pod 'Firebase/Firestore'
+  pod 'FirebaseFirestoreSwift'
 
   # Pods for Firebase_Practice1
 
