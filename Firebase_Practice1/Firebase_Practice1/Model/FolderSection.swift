@@ -22,6 +22,7 @@ import FirebaseFirestoreSwift
 struct FolderSection: Codable {
     // decode時にidプロパティにdocumentIdを自動で入れてくれる
     // encode時には、@DocumentIDがついているプロパティは無視される
+        // 【疑問】自動化されていない。。。
     @DocumentID var id: String?
     var year: Int
     var totalDayInYear: Int = 0
@@ -31,7 +32,7 @@ struct FolderSection: Codable {
 
     // Encode&Decodeする対象のメンバを指定
     enum CodingKeys: String, CodingKey {
-      case id
+//      case id
       case year
       case totalDayInYear
       case isShowed
@@ -42,7 +43,7 @@ struct FolderSection: Codable {
     // エンコード処理
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(self.id, forKey: .id)
+//        try container.encode(self.id, forKey: .id)
         try container.encode(self.year, forKey: .year)
         try container.encode(self.totalDayInYear, forKey: .totalDayInYear)
         try container.encode(self.isShowed, forKey: .isShowed)

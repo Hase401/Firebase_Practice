@@ -68,11 +68,28 @@ extension FolderSectionRepositroy {
     // 【疑問】updatedAtの更新はどうすればいいのか？
     // 【疑問】FolderSectionを渡すよりも1つ1つ渡した方がシンプルだし可読性も上がりやすい？
     func toggleIsShowed(folderSection: FolderSection,
-                               completion: @escaping (Result<Void, Error>) -> Void) {
+                        completion: @escaping (Result<Void, Error>) -> Void) {
         guard let user = Auth.auth().currentUser else { return }
+//        print("folderSection.id:", folderSection.id) // 確認用、nilじゃなければよい
         guard let folderSectionId = folderSection.id else { return }
         let db = Firestore.firestore()
+//        var data: [String: Any]!
+//        do {
+//            // エンコード処理
+//            data = try Firestore.Encoder().encode(folderSection)
+//        } catch {
+//            fatalError(error.localizedDescription)
+//        }
         let documentReference = db.collection("users/\(user.uid)/folderSections").document(folderSectionId)
+        // 【パターン②】
+//        documentReference.setData(data, merge: true) { error in
+//            if let error = error {
+//                completion(.failure(error))
+//            } else {
+//                completion(.success(()))
+//            }
+//        }
+        // 【パターン①】encodeなしのとき
         documentReference.updateData([
             // 【疑問】前はクラスだったからtoggleしなくても変わってたのかも？
             "isShowed": folderSection.isShowed,
@@ -102,21 +119,29 @@ extension FolderSectionRepositroy {
                 return
             }
             var folderSections: [FolderSection] = []
-//            folderSections = snapshot.documents.compactMap { queryDocumentSnapshot -> FolderSection? in
-//                return try? queryDocumentSnapshot.data(as: FolderSection.self)
+            // 【パターン①】// これならolderSecitonのidプロパティにdocumentIdが自動で入っているかも？
+//            let a = querySnapshot.documents // 確認用
+            folderSections = querySnapshot.documents.compactMap { queryDocumentSnapshot -> FolderSection? in
+                // 【疑問】なぜ、try?なのか？
+                var folderSection = try? queryDocumentSnapshot.data(as: FolderSection.self)
+                folderSection?.id = queryDocumentSnapshot.documentID // 自動でやってくれないので無理やり追加する
+                // 【疑問】結局compactMapでnilだったら弾かれている？playgroundで確認してみる
+                return folderSection
+            }
+            completion(.success(folderSections))
+            // 【パターン②】
+//            do {
+//                for document in querySnapshot.documents {
+//                    // key:value形式のデータをDecodeする
+//                    // 【疑問】このときにfolderSecitonのidプロパティにdocumentIdが自動で入っているように設定したい
+//                    let folderSection: FolderSection = try Firestore.Decoder().decode(FolderSection.self, from: document.data())
+//                    folderSections.append(folderSection)
+//                }
+//                completion(.success(folderSections))
 //            }
-            do {
-                for document in querySnapshot.documents {
-                    // key:value形式のデータをDecodeする
-                    // このときにfolderSecitonのidプロパティにdocumentIdが自動で入っているように設定した
-                    let folderSection: FolderSection = try Firestore.Decoder().decode(FolderSection.self, from: document.data())
-                    folderSections.append(folderSection)
-                }
-                completion(.success(folderSections))
-            }
-            catch {
-                fatalError(error.localizedDescription)
-            }
+//            catch {
+//                fatalError(error.localizedDescription)
+//            }
         }
     }
 

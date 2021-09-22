@@ -32,8 +32,8 @@ final class FolderHeaderView: UITableViewHeaderFooterView {
     // 外から値を貰えば処理を実行できる(外からprivateのプロパティに値を渡せる)
     func configure(folderSection: FolderSection) {
         folderHeaderDateLabel.text = String(folderSection.year)+"年"
-        totalDateLabel.text = "合計 "+String(folderSection.totalDayInYearSection)+" 日"
-        totalDateLabel.addAccent(pattern: String(folderSection.totalDayInYearSection), color: ThemeColor.mainColor) // 管理したい
+        totalDateLabel.text = "合計 "+String(folderSection.totalDayInYear)+" 日"
+        totalDateLabel.addAccent(pattern: String(folderSection.totalDayInYear), color: ThemeColor.mainColor) // 管理したい
     }
 
     // Viewにロジックを書いてしまっているけど、、

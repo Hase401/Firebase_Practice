@@ -7,8 +7,10 @@
 
 import Foundation
 import Firebase
+import FirebaseFirestoreSwift
 
 //struct FileDate: Codable {
+//    @DocumentID var id: String?
 //    var year: Int
 //    var month: Int
 //    var day: Int
