@@ -112,28 +112,26 @@ extension FolderDateRepository {
     // 【保留】
     // 【疑問】FolderDateではなく、folderDateIdだけでいい？
     // 【解決】今回はプロパティとしてidを持っていたほうが楽になる
-//    func updateTotalDayInMonth(folderDate: FolderDate,
-//                                         completion: @escaping (Result<Void, Error>) -> Void) {
-//        if folderDate.totalDayInMonth == 0 {
-//            return
-//        }
-//        guard let user = Auth.auth().currentUser else { return }
-//        guard let folderDateId = folderDate.id else { return }
-//        let db = Firestore.firestore()
-//        let documentReference = db.collection("users/\(user.uid)/folderSections").document("folderSection").collection("folderDates").document(folderDateId)
-//        documentReference.updateData([
-//            "totalDayInMonth": folderDate.totalDayInMonth,
-//            "updatedAt": FieldValue.serverTimestamp()
-//        ]) { error in
-//            if let error = error {
-//                completion(.failure(error))
-//            } else {
-//                completion(.success(()))
-//            }
-//        }
+    func updateTotalDayInMonth(folderDate: FolderDate, fileDatesCount: Int,
+                                         completion: @escaping (Result<Void, Error>) -> Void) {
+        if fileDatesCount == 0 { return }
+        guard let user = Auth.auth().currentUser else { return }
+        guard let folderDateId = folderDate.id else { return }
+        let db = Firestore.firestore()
+        let documentReference = db.collection("users/\(user.uid)/folderSections").document("folderSection").collection("folderDates").document(folderDateId)
+        documentReference.updateData([
+            "totalDayInMonth": fileDatesCount, // これでようやく更新される
+            "updatedAt": FieldValue.serverTimestamp()
+        ]) { error in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success(()))
+            }
+        }
 
 
-        // setDateのmergeの場合もあるよ
+//         setDateのmergeの場合もあるよ
 //        if let user = Auth.auth().currentUser {
 //            // 【変更後】
 //            Firestore.firestore().collection("Users/\(user.uid)/folderSections/folderSection/folderDates").document(folderDateId).setData([

@@ -9,38 +9,39 @@ import Foundation
 import Firebase
 import FirebaseFirestoreSwift
 
-//struct FileDate: Codable {
-//    @DocumentID var id: String?
-//    var year: Int
-//    var month: Int
-//    var day: Int
-//    var week: String
-//    var createdAt: Timestamp?
-//    var updatedAt: Timestamp?
-//
-//    enum CodingKeys: String, CodingKey {
-//      case year
-//      case month
-//      case day
-//      case week
-//      case createdAt
-//      case updatedAt
-//    }
-//
-//    // エンコード処理
-//    func encode(to encoder: Encoder) throws {
-//        var container = encoder.container(keyedBy: CodingKeys.self)
-//        try container.encode(self.year, forKey: .year)
-//        try container.encode(self.month, forKey: .month)
-//        try container.encode(self.day, forKey: .day)
-//        try container.encode(self.week, forKey: .week)
-//        // 初期値がnilのときのみ設定する
-//        if self.createdAt == nil {
-//            try container.encode(FieldValue.serverTimestamp(), forKey: .createdAt)
-//        }
-//        try container.encode(FieldValue.serverTimestamp(), forKey: .updatedAt)
-//    }
-//}
+struct FileDate: Codable {
+    @DocumentID var id: String?
+    var year: Int
+    var month: Int
+    var day: Int
+    var week: String
+    var createdAt: Timestamp?
+    var updatedAt: Timestamp?
+
+    enum CodingKeys: String, CodingKey {
+      case year
+      case month
+      case day
+      case week
+      case createdAt
+      case updatedAt
+    }
+
+    // エンコード処理
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(self.year, forKey: .year)
+        try container.encode(self.month, forKey: .month)
+        try container.encode(self.day, forKey: .day)
+        try container.encode(self.week, forKey: .week)
+        // 初期値がnilのときのみ設定する
+        if self.createdAt == nil {
+            try container.encode(FieldValue.serverTimestamp(), forKey: .createdAt)
+        }
+        try container.encode(FieldValue.serverTimestamp(), forKey: .updatedAt)
+    }
+}
+
 
 // FileDates(サブコレクション)
     // fileDate.id(ドキュメント)

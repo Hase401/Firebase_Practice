@@ -36,6 +36,7 @@
 		BA65E2E126F173D800B39CA2 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA65E2E026F173D800B39CA2 /* User.swift */; };
 		BA70C6BA26F9C78E00DB6C7C /* FolderSectionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA70C6B926F9C78E00DB6C7C /* FolderSectionRepository.swift */; };
 		BA70C6BC26F9E1C600DB6C7C /* FolderDateRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA70C6BB26F9E1C600DB6C7C /* FolderDateRepository.swift */; };
+		BAC51F0326FB747200576B79 /* FileDateRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC51F0226FB747200576B79 /* FileDateRepository.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -70,6 +71,7 @@
 		BA65E2E026F173D800B39CA2 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		BA70C6B926F9C78E00DB6C7C /* FolderSectionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderSectionRepository.swift; sourceTree = "<group>"; };
 		BA70C6BB26F9E1C600DB6C7C /* FolderDateRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderDateRepository.swift; sourceTree = "<group>"; };
+		BAC51F0226FB747200576B79 /* FileDateRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileDateRepository.swift; sourceTree = "<group>"; };
 		BD862F983FD77169962CC75E /* Pods_Firebase_Practice1.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Firebase_Practice1.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F1B7AAF4046ABCF1EC1CAE26 /* Pods-Firebase_Practice1.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Firebase_Practice1.release.xcconfig"; path = "Target Support Files/Pods-Firebase_Practice1/Pods-Firebase_Practice1.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -248,6 +250,7 @@
 			children = (
 				BA70C6B926F9C78E00DB6C7C /* FolderSectionRepository.swift */,
 				BA70C6BB26F9E1C600DB6C7C /* FolderDateRepository.swift */,
+				BAC51F0226FB747200576B79 /* FileDateRepository.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -397,6 +400,7 @@
 				BA5A854A26EEE77C006298B6 /* UILabel+Accent.swift in Sources */,
 				BA65E2E126F173D800B39CA2 /* User.swift in Sources */,
 				BA5A853926EED723006298B6 /* MyButton.swift in Sources */,
+				BAC51F0326FB747200576B79 /* FileDateRepository.swift in Sources */,
 				BA5A854C26EEE79C006298B6 /* String+Range.swift in Sources */,
 				BA5A853626EED6D0006298B6 /* ThemeColor.swift in Sources */,
 				BA5A853026EED654006298B6 /* FolderDate.swift in Sources */,
