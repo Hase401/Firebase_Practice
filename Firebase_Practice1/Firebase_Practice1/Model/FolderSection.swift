@@ -10,15 +10,6 @@ import Firebase
 import FirebaseAuth
 import FirebaseFirestoreSwift
 
-// FolderSections(サブコレクション)
-    // folderSection.id (ドキュメント)
-        // year(フィールド)
-        // totalDayInYearSection(フィールド)
-        // isShowed(フィールド)
-        // createAt(フィールド)
-        // updateAt(フィールド)
-        // FolderDates(サブコレクション) → 次のファイルへ
-
 struct FolderSection: Codable {
     // decode時にidプロパティにdocumentIdを自動で入れてくれる
     // encode時には、@DocumentIDがついているプロパティは無視される
@@ -54,6 +45,16 @@ struct FolderSection: Codable {
         try container.encode(FieldValue.serverTimestamp(), forKey: .updatedAt)
     }
 }
+
+
+// FolderSections(サブコレクション)
+    // folderSection.id (ドキュメント)
+        // year(フィールド)
+        // totalDayInYearSection(フィールド)
+        // isShowed(フィールド)
+        // createAt(フィールド)
+        // updateAt(フィールド)
+        // FolderDates(サブコレクション) → 次のファイルへ
 
 //final class FolderSection: NSObject {
 //    var id: String

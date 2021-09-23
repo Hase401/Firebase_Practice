@@ -42,6 +42,7 @@ struct FolderDate: Codable {
     }
 }
 
+
 // FolderDates(サブコレクション)
     // folderDate.id(ドキュメント)
         // year(フィールド)

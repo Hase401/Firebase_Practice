@@ -8,10 +8,10 @@
 import Foundation
 import Firebase
 
-final class FolderSectionRepositroy {
+final class FolderSectionRepository {
 }
 
-extension FolderSectionRepositroy {
+extension FolderSectionRepository {
     // toggleIsShowedさせるときにDocumentReferenceのIdを使いたいのでDoucmentReferenceを返す
         // プロパティにidをいれたのでDocumentReferenceを返さなくても良くなったのでVoidにしておく
     func addFolderSection(folderSection: FolderSection, completion: @escaping (Result<Void, Error>) -> Void) {
@@ -145,39 +145,37 @@ extension FolderSectionRepositroy {
         }
     }
 
-    // 【保留】
     // FolderSection のプロバティとして[FolderDate]があるとキレイだったかも
-//    func calculateTotalDayInYear(folderSection: FolderSection,
-//                                               folderDates: [FolderDate], // これのtotalDayInMonthをfor文で回して計算すればいいかも！
-////                                               totalDay: Int,
-//                                               completion: @escaping (Result<Void, Error>) -> Void) {
-////        print("folderDates:", folderDates)
-////        print("folderDates.count:", folderDates.count)
-//        if folderDates.count == 0 {
-//            return // もともとtotalDayInYearSectionは0だから
-//        }
-//        guard let user = Auth.auth().currentUser else { return }
-//        guard let folderSectionId = folderSection.id else { return }
-//        var totalDay: Int = 0
-//        for i in 0...folderDates.count-1 {
-//            totalDay += folderDates[i].totalDayInMonth
-//        }
-////        print("totalDay:", totalDay)
-//        let db = Firestore.firestore()
-//        let documentReference = db.collection("users/\(user.uid)/folderSections").document(folderSectionId)
-//        documentReference.updateData([
-//            "totalDayInYear": totalDay,
-//            "updatedAt": FieldValue.serverTimestamp()
-//        ]) { error in
-//            if let error = error {
-//                completion(.failure(error))
-//            } else {
-//                completion(.success(()))
-//            }
-//        }
-//    }
+    func updateTotalDayInYear(folderSection: FolderSection,
+                                               folderDates: [FolderDate], // これのtotalDayInMonthをfor文で回して計算すればいいかも！
+//                                               totalDay: Int,
+                                               completion: @escaping (Result<Void, Error>) -> Void) {
+//        print("folderDates:", folderDates)
+//        print("folderDates.count:", folderDates.count)
+        if folderDates.count == 0 { return }
+        guard let user = Auth.auth().currentUser else { return }
+        guard let folderSectionId = folderSection.id else { return }
+        var totalDay: Int = 0
+        for i in 0...folderDates.count-1 {
+            totalDay += folderDates[i].totalDayInMonth
+        }
+//        print("totalDay:", totalDay)
+        let db = Firestore.firestore()
+        let documentReference = db.collection("users/\(user.uid)/folderSections").document(folderSectionId)
+        documentReference.updateData([
+            "totalDayInYear": totalDay,
+            "updatedAt": FieldValue.serverTimestamp()
+        ]) { error in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success(()))
+            }
+        }
+    }
 
 
+    // 他の書き方としてメモ
 //    static func fetchFolderSection(completion: (([FolderSection]) -> Void)? = nil) {
 //        guard let user = Auth.auth().currentUser else { return }
 //        let db = Firestore.firestore()

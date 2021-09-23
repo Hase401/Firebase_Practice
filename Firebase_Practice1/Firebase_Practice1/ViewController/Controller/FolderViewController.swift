@@ -21,27 +21,26 @@ final class FolderViewController: UIViewController {
         return vc
     }
 
-    private let folderSectionRepository = FolderSectionRepositroy()
+    private let folderSectionRepository = FolderSectionRepository()
     private let folderDateRepository = FolderDateRepository()
-
-//    private var folderSectionDocumentReferenceId: String?
 
     private var yearArrayChoosed: [Int] = []
     private let monthArray = TimeArray.monthArray
     private var componentFiles: [[Int]] = []
 
-
     private var folderSections: [FolderSection] = []
-//    private var folderDates: [FolderDate] = [] // Firebaseでorderでソートしてyearが一致しているものを取ってこれるようなstatic関数を作っておく
     private var currentFolderDateDictionary: [Int: [FolderDate]] = [:]
-//    private var folderDates: [FolderSection: [FolderDate]] = [:] // こっちに帰れるなら変えたい
+
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
         // 【実験】File画面から戻ったときにこれが毎回呼ばれるかどうか
-        // 【結果】呼ばれる！ // 先にtotalDayInYearSectionがクロージャで変わっていない笑
+        // 【結果】呼ばれる！
+        // 【問題】先にtotalDayInYearがクロージャで変わっていない笑
+        // 【質問予定】どう非同期処理すればいいのか？具体的にわかりやすく説明する
         showCurrentFolderSections()
+        // 【実験】自作のcompletionを省略できる？
         showCurrentFolderDates()
     }
 
@@ -56,98 +55,36 @@ final class FolderViewController: UIViewController {
 }
 
 private extension FolderViewController {
-    // 【課題】completionを自作したい
-    func showCurrentFolderSections() {
+    // 【課題】completionを自作したい // completion: (() -> Void)? = nil
+    func showCurrentFolderSections(completion: (() -> Void)? = nil) {
         folderSectionRepository.fetchFolderSection { [weak self] response in
             guard let self = self else { return }
             switch response {
             case .success(let folderSections):
                 self.folderSections = folderSections
                 self.tableView.reloadData()
+                guard let completionHandler = completion else { return }
+                completionHandler()
             case .failure(let error):
                 FuncUtility.showErrorDialog(error: error, title: "データの読み込みに失敗しました", currentVC: self)
             }
         }
-
-        
-//        FolderSection.showFolderSectionsForFirestore(completionAction: { (querySnapshot, error) in
-//            if let error = error {
-//                FuncUtility.showErrorDialog(error: error,
-//                                            title: "FolderSectionの取得失敗",
-//                                            currentVC: self)
-//                return
-//            }
-//            guard let querySnapshot = querySnapshot else { return }
-//
-//            // これで本来やりたかったことのスコープがシンプルになる
-//            // 実際にこれなんやからずにmapでいい けど structやcodble、unique？にしないと駄目？
-//            var folderSectionArray: [FolderSection] = []
-//
-//            for doc in querySnapshot.documents {
-//                let folderSection = FolderSection(doc: doc)
-//                folderSectionArray.append(folderSection)
-//            }
-//            self.folderSections = folderSectionArray
-//
-//
-//            guard let reloadHander = completion else { return }
-//            reloadHander()
-//
-//
-////            self.tableView.reloadData() // tableViewとは本来メソッドの責務を超える気がする
-//        })
     }
 
-    func showCurrentFolderDates() {
+    func showCurrentFolderDates(completion: (() -> Void)? = nil) {
         folderDateRepository.fetchFolderDate { [weak self] response in
             guard let self = self else { return }
             switch response {
             case .success(let folderDateDictionary):
-                print("folderDateDictionary:", folderDateDictionary)
+                print("②folderDateDictionary:", folderDateDictionary)
                 self.currentFolderDateDictionary = folderDateDictionary
                 self.tableView.reloadData()
+                guard let completionHandler = completion else { return }
+                completionHandler()
             case .failure(let error):
                 FuncUtility.showErrorDialog(error: error, title: "データの読み込みに失敗しました", currentVC: self)
             }
-            
         }
-
-
-//        FolderDate.showFolderDateForFirestore(completionAction: { (querySnapshot, error) in
-//            // 例外処理
-//            if let error = error {
-//                // エラーではしっかりとアラートを出して終わり
-//                FuncUtility.showErrorDialog(error: error,
-//                                            title: "FolderDateの取得失敗",
-//                                            currentVC: self)
-//                return
-//            }
-//            guard let querySnapshot = querySnapshot else {
-//                return
-//            }
-//
-//            // 本来やらせたいこと
-//            var folderDateDictionay: [Int: [FolderDate]] = [:]
-//            // whereField,イコールyear と order.monthをしてインデックスを作るべき？ // セキュリティもやる
-//            for doc in querySnapshot.documents {
-//                print("doc:", doc) // for文の回数を見る
-//                let folderDate = FolderDate(doc: doc)
-//                let year = folderDate.year
-//                if folderDateDictionay[year] == nil {
-//                    folderDateDictionay[year] = [] // yearに対応したものだけが入る // classなのになぜDBに保存されているからデータが共有化されていないのか？
-//                }
-//                folderDateDictionay[year]?.append(folderDate)
-//            }
-//            print("querySnapshot.documents.count: ", querySnapshot.documents.count)
-//            print("folderDateDictionary.count: ", folderDateDictionay.count) // いくつの年数が入っているか
-//            self.currentFolderDateDictionary = folderDateDictionay
-//            print("self.currentFolderDates: ", self.currentFolderDateDictionary)
-//
-//            guard let reloadHander = completion else { return }
-//            reloadHander()
-//
-////            self.tableView.reloadData() // 2回目はめんどくさいけど今の所しょうがない
-//        })
     }
 
     func setupNC() {
@@ -268,7 +205,6 @@ private extension FolderViewController {
         pickerView.delegate = self
         pickerView.dataSource = self
         actionSheet.view.addSubview(pickerView)
-        // 【疑問】ここの1を導くのがmonthだととても大変そう
         pickerView.selectRow(1, inComponent: 0, animated: true)
         // todayYearからyearArrayChoosed[1]に変更。。。 // まだキレイとだと思わないけど、明確な正解はないのかも
         changeErrorTextLabel(label: label, yearSelected: yearArrayChoosed[1], monthSelected: 1)
@@ -287,68 +223,30 @@ private extension FolderViewController {
                                     self.folderSectionRepository.addFolderSection(folderSection: newFolderSection) { [weak self] response in
                                         guard let self = self else { return }
                                         switch response {
-                                        // Voidに変更になったのでlet documentReferenceを削除
                                         case .success():
                                             self.currentFolderDateDictionary[year] = []
-                                            // 【疑問】これだとどうやって合わせればいいのか、多分無理なので、プロパティidとしてdocumentIdを持たしたい！！
-//                                            self.folderSectionDocumentReferenceId = documentReference.documentID
-                                            // FolderDateでもtableView.reload()をするので省略しても遅延の体感時間は誤差
-                                            // でも、結局最新のFolderSectionはとってこないといけない
                                             self.showCurrentFolderSections()
                                         case .failure(let error):
                                             FuncUtility.showErrorDialog(error: error, title: "データの追加に失敗しました", currentVC: self)
                                         }
                                     }
-
-
-//                                    FolderSection.createFolderSectionToFirestore(year: year,
-//                                                                                 completionAction: { error in
-//                                        if let error = error {
-//                                            FuncUtility.showErrorDialog(error: error,
-//                                                                        title: "FolderSectionの作成失敗",
-//                                                                        currentVC: self)
-//                                        } else {
-//                                            print("FolderSectionの作成成功")
-//                                            // 【変更後】
-//                                            self.currentFolderDateDictionary[year] = [] // 新しく作られるときにその年をnilじゃなく[]にする
-//                                            self.showCurrentFolderSections(completion: { [weak self] in
-//                                                self?.tableView.reloadData()
-//                                            }) // これいるのかな、、、tableview.reload２回やっている
-//                                        }
-//                                    })
-                                    // 【変更前】
-//                                    self.currentFolderDateDictionary[year] = [] // 新しく作られるときにその年をnilじゃなく[]にする
-//                                    self.showCurrentFolderSections()
                                 }
 
                                 if !isCommonInMonth {
-                                    // 【パターン②】
                                     let newFolderDate = FolderDate(year: year, month: month)
                                     self.folderDateRepository.addFolderDate(folderDate: newFolderDate) { [weak self] response in
                                         guard let self = self else { return }
                                         switch response {
-                                        // Voidに変更になったのでlet documentReferenceを削除
                                         case .success():
                                             self.showCurrentFolderDates()
+//                                            { [weak self] in
+//                                                guard let self = self else { return }
+//                                                self.tableView.reloadData()
+//                                            }
                                         case .failure(let error):
                                             FuncUtility.showErrorDialog(error: error, title: "データの追加に失敗しました", currentVC: self)
                                         }
                                     }
-                                    // 【パターン①】
-//                                    FolderDate.createFolderDateToFirestore(year: year, month: month, completionAction: { error in
-//                                        if let error = error {
-//                                            FuncUtility.showErrorDialog(error: error,
-//                                                                        title: "FolderDateの作成失敗",
-//                                                                        currentVC: self)
-//                                        } else {
-//                                            print("FolderDateの作成成功")
-//                                            self.showCurrentFolderDates(completion: { [weak self] in
-//                                                self?.tableView.reloadData()
-//                                            })
-//                                        }
-//                                    })
-                                    // 【変更前】
-//                                    self.showCurrentFolderDates()
                                 }
                                })
         let close = UIAlertAction(title: "閉じる",
@@ -379,101 +277,75 @@ extension FolderViewController: UITableViewDelegate {
     }
 
     @objc func headerTapped(sender: UITapGestureRecognizer) {
-        print("HeaderViewTapped")
         guard let section = sender.view?.tag else { return }
-        print("HeaderViewTapped")
-        // folderSectionのプロパティにidを入れたので削除
-//        guard let documentReferenceId = folderSectionDocumentReferenceId else {
-//            return
-//        }
-        // 【パターン①】documentIdをVCで管理する場合
-        print("folderSection.isShowed:", folderSections[section].isShowed)
         folderSections[section].isShowed.toggle()
-        print("folderSection.isShowed:", folderSections[section].isShowed)
-        // isShowedの変更をFirestoreに更新する
         folderSectionRepository.toggleIsShowed(folderSection: folderSections[section]) { [weak self] response in
             guard let self = self else { return }
             switch response {
             case .success():
                 self.tableView.beginUpdates()
-                // isShowedの変更後に表示する
                 self.tableView.reloadSections([section], with: .fade)
                 self.tableView.endUpdates()
             case .failure(let error):
                 FuncUtility.showErrorDialog(error: error, title: "データの更新に失敗しました", currentVC: self)
             }
         }
-        // 【パターン②】documentIdをそのままプロパティとして管理する場合
-//        FolderSection.isShowedUpdate(folderSection: folderSections[section],
-//                                     completionAction: { error in
-//                                        if let error = error {
-//                                            FuncUtility.showErrorDialog(error: error,
-//                                                                        title: "FolderSection更新失敗",
-//                                                                        currentVC: self)
-//                                        } else {
-//                                            print("FolderSection更新成功")
-//                                            // 【変更後】// これでスムーズにできる？　// そもそもtableのリロードでなぜ、isShowedが更新されているのか
-//                                            // 【曖昧】より細かく見ないとわからないが結果的にfolderSection[section]のisShowedが変わっている
-//                                            // 【疑問】PCはネットに繋いでいないのにDBと接続できている？
-//                                            self.tableView.beginUpdates()
-//                                            self.tableView.reloadSections([section], with: .fade)
-//                                            self.tableView.endUpdates()
-//                                        }
-//                                     })
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        // 【保留】
-//        guard let currentFolderDates = currentFolderDateDictionary[folderSections[indexPath.section].year] else {
-//            return
-//        }
-//        let fileVC = FileViewController.instantiate(folderDate: currentFolderDates[indexPath.row], addFile: { [weak self] in
-//            guard let strongSelf = self else { return }
-//            // 【DB変更後】
-//            FolderDate.updateTotalDayInMonth(folderDate: currentFolderDates[indexPath.row],
-//                                             fileDatesCount: $0,
-//                                             completionAction: { error in
-//                                                if let error = error {
-//                                                    FuncUtility.showErrorDialog(error: error,
-//                                                                                title: "folderDateTotalDayの計算失敗",
-//                                                                                currentVC: strongSelf)
-//                                                } else {
-//                                                    print("folderDateTotalDayの計算成功")
-//                                                    // totalDayInMonthが終わったらInYearで計算する
-//                                                    // 【課題】ネストが深くなって見にくいので何かいい方法ない？ // 引数書かないといけないのが犠牲になる？
-//                                                    // 【問題】昔のままのfolderDatesを渡してしまっている！！！！！！！！！！！！！
-//                                                    // 【解決】currnetFolderDates → nextCurrentFolderDates
-//                                                    strongSelf.showCurrentFolderDates(completion: nil) // 最新のものに更新
-//                                                    guard let nextCurrentFolderDate = strongSelf.currentFolderDateDictionary[strongSelf.folderSections[indexPath.section].year] else {
-//                                                        return
-//                                                    }
-//                                                    // 【保留パターン②】
-//                                                    strongSelf.folderSectionRepository.calculateTotalDayInYear
-//                                                    // 【保留パターン①】
-////                                                    FolderSection.calculateTotalDayInYearSection(folderSection: strongSelf.folderSections[indexPath.section], folderDates: nextCurrentFolderDate, completionAction: { error in
-////                                                        if let error = error {
-////                                                            FuncUtility.showErrorDialog(error: error,
-////                                                                                        title: "folderSectionTotalDayの計算失敗",
-////                                                                                        currentVC: strongSelf)
-////                                                        } else {
-////                                                            print("folderSectionTotalDayの計算成功")
-////
-////                                                            // 最新のFolderSectionとして表示させる
-////                                                            strongSelf.tableView.beginUpdates()
-////                                                            strongSelf.tableView.reloadSections([indexPath.section], with: .automatic)
-////                                                            strongSelf.tableView.endUpdates()
-////                                                            //                                                                strongSelf.showCurrentFolderSections() // これより上の書き方が良い
-////                                                        }
-////                                                    })
-//                                                }
-//                                             })
-//        })
-//        self.navigationController?.pushViewController(fileVC, animated: true)
-//        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "記録一覧",
-//                                                                style: .done,
-//                                                                target: nil,
-//                                                                action: nil)
+        guard let currentFolderDates = currentFolderDateDictionary[folderSections[indexPath.section].year] else { return }
+        let fileVC = FileViewController.instantiate(folderDate: currentFolderDates[indexPath.row], addFile: { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.folderDateRepository.updateTotalDayInMonth(folderDate: currentFolderDates[indexPath.row], fileDatesCount: $0) { [weak self] response in
+                // 【疑問】 [weak self] は必要？
+                guard let self = self else { return }
+                switch response {
+                case .success():
+                    print("①現在のcurrentFolderDates:", currentFolderDates)
+                    let dispatchGroup = DispatchGroup()
+                    let dispatchQueue = DispatchQueue(label: "queue") // 直列キュー / attibutes指定なし
+                    //  1つの非同期処理を実行
+                    dispatchQueue.async(group: dispatchGroup) { [weak self] in
+                        dispatchGroup.enter()
+                        self?.showCurrentFolderDates { [weak self] in
+                            dispatchGroup.leave()
+                        }
+                    }
+                    // 全ての非同期処理完了後にメインスレッドで処理
+                    // 全ての処理で完了の合図としてleave()が呼ばれた後に、notify()メソッドで指定したクロージャが実行
+                    dispatchGroup.notify(queue: .main) {
+                        print("③All Process Done!")
+                        // 【実験】strongSelf → self → strongSelf →　selfで変えてみたけど意味ない。やっぱり非同期処理の問題?
+                        // 【課題】非同期処理なので最新のものをとってこれていない
+                        guard let nextCurrentFolderDates = self.currentFolderDateDictionary[self.folderSections[indexPath.section].year] else {
+                            return
+                        }
+                        print("④更新後、最新のnextCurrentFolderDates:", nextCurrentFolderDates) // 確認用、結局新しいものをとってこれてきてない
+                        self.folderSectionRepository.updateTotalDayInYear(folderSection: self.folderSections[indexPath.section], folderDates: nextCurrentFolderDates) { [weak self] response in
+                            // 【疑問】 [weak self] は必要？
+                            // 【曖昧】ここは必要そう？
+                            guard let self = self else { return }
+                            switch response {
+                            case .success():
+                                self.tableView.beginUpdates()
+                                self.tableView.reloadSections([indexPath.section], with: .automatic)
+                                self.tableView.endUpdates()
+                            case .failure(let error):
+                                FuncUtility.showErrorDialog(error: error, title: "データの更新に失敗しました", currentVC: self)
+                            }
+                        }
+                    }
+                case .failure(let error):
+                    FuncUtility.showErrorDialog(error: error, title: "データの更新に失敗しました", currentVC: self)
+                }
+            }
+        })
+        self.navigationController?.pushViewController(fileVC, animated: true)
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "記録一覧",
+                                                                style: .done,
+                                                                target: nil,
+                                                                action: nil)
     }
 
 }
@@ -507,12 +379,7 @@ extension FolderViewController: UITableViewDataSource {
     }
 }
 
-
-
-
-
 extension FolderViewController: UIPickerViewDelegate {
-
 }
 
 extension FolderViewController: UIPickerViewDataSource {
