@@ -40,8 +40,9 @@ final class FolderViewController: UIViewController {
         showCurrentFolderSections {
             dispatchGroup.leave()
         }
-        dispatchGroup.notify(queue: .main) {
-            showCurrentFolderDates { [weak self] in
+        dispatchGroup.notify(queue: .main) { [weak self] in
+            guard let self = self else { return }
+            self.showCurrentFolderDates { [weak self] in
                 guard let self = self else { return }
                 self.tableView.reloadData()
             }
