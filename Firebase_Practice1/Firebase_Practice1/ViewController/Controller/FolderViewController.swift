@@ -35,13 +35,17 @@ final class FolderViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        // 【実験】File画面から戻ったときにこれが毎回呼ばれるかどうか
-        // 【結果】呼ばれる！
-        // 【問題】先にtotalDayInYearがクロージャで変わっていない笑
-        // 【質問予定】どう非同期処理すればいいのか？具体的にわかりやすく説明する
-        showCurrentFolderSections()
-        // 【実験】自作のcompletionを省略できる？
-        showCurrentFolderDates()
+        let dispatchGroup = DispatchGroup()
+        dispatchGroup.enter()
+        showCurrentFolderSections {
+            dispatchGroup.leave()
+        }
+        dispatchGroup.notify(queue: .main) {
+            showCurrentFolderDates { [weak self] in
+                guard let self = self else { return }
+                self.tableView.reloadData()
+            }
+        }
     }
 
     override func viewDidLoad() {
@@ -62,7 +66,6 @@ private extension FolderViewController {
             switch response {
             case .success(let folderSections):
                 self.folderSections = folderSections
-                self.tableView.reloadData()
                 guard let completionHandler = completion else { return }
                 completionHandler()
             case .failure(let error):
@@ -78,7 +81,6 @@ private extension FolderViewController {
             case .success(let folderDateDictionary):
                 print("②folderDateDictionary:", folderDateDictionary)
                 self.currentFolderDateDictionary = folderDateDictionary
-                self.tableView.reloadData()
                 guard let completionHandler = completion else { return }
                 completionHandler()
             case .failure(let error):
@@ -225,7 +227,10 @@ private extension FolderViewController {
                                         switch response {
                                         case .success():
                                             self.currentFolderDateDictionary[year] = []
-                                            self.showCurrentFolderSections()
+                                            self.showCurrentFolderSections { [weak self] in
+                                                guard let self = self else { return }
+                                                self.tableView.reloadData()
+                                            }
                                         case .failure(let error):
                                             FuncUtility.showErrorDialog(error: error, title: "データの追加に失敗しました", currentVC: self)
                                         }
@@ -238,11 +243,10 @@ private extension FolderViewController {
                                         guard let self = self else { return }
                                         switch response {
                                         case .success():
-                                            self.showCurrentFolderDates()
-//                                            { [weak self] in
-//                                                guard let self = self else { return }
-//                                                self.tableView.reloadData()
-//                                            }
+                                            self.showCurrentFolderDates { [weak self] in
+                                                guard let self = self else { return }
+                                                self.tableView.reloadData()
+                                            }
                                         case .failure(let error):
                                             FuncUtility.showErrorDialog(error: error, title: "データの追加に失敗しました", currentVC: self)
                                         }
@@ -304,27 +308,27 @@ extension FolderViewController: UITableViewDelegate {
                 case .success():
                     print("①現在のcurrentFolderDates:", currentFolderDates)
                     let dispatchGroup = DispatchGroup()
-                    let dispatchQueue = DispatchQueue(label: "queue") // 直列キュー / attibutes指定なし
-                    //  1つの非同期処理を実行
-                    dispatchQueue.async(group: dispatchGroup) { [weak self] in
-                        dispatchGroup.enter()
-                        self?.showCurrentFolderDates { [weak self] in
-                            dispatchGroup.leave()
-                        }
+                    // 【疑問】今回非同期処理が１つだけなのであまり関係ない？一応なくても動く
+//                    let dispatchQueue = DispatchQueue(label: "queue") // 直列キュー / attibutes指定なし
+//                    dispatchQueue.async(group: dispatchGroup) { [weak self] in
+                    dispatchGroup.enter()
+                    strongSelf.showCurrentFolderDates { [weak self] in
+                        guard let self = self else { return }
+                        self.tableView.reloadData()
+                        dispatchGroup.leave()
                     }
-                    // 全ての非同期処理完了後にメインスレッドで処理
+//                    }
                     // 全ての処理で完了の合図としてleave()が呼ばれた後に、notify()メソッドで指定したクロージャが実行
                     dispatchGroup.notify(queue: .main) {
                         print("③All Process Done!")
-                        // 【実験】strongSelf → self → strongSelf →　selfで変えてみたけど意味ない。やっぱり非同期処理の問題?
                         // 【課題】非同期処理なので最新のものをとってこれていない
-                        guard let nextCurrentFolderDates = self.currentFolderDateDictionary[self.folderSections[indexPath.section].year] else {
+                        // 【疑問】strongSelfでもselfでもどっちでも動くけど、いいのか？
+                        guard let nextCurrentFolderDates = strongSelf.currentFolderDateDictionary[strongSelf.folderSections[indexPath.section].year] else {
                             return
                         }
                         print("④更新後、最新のnextCurrentFolderDates:", nextCurrentFolderDates) // 確認用、結局新しいものをとってこれてきてない
-                        self.folderSectionRepository.updateTotalDayInYear(folderSection: self.folderSections[indexPath.section], folderDates: nextCurrentFolderDates) { [weak self] response in
+                        strongSelf.folderSectionRepository.updateTotalDayInYear(folderSection: strongSelf.folderSections[indexPath.section], folderDates: nextCurrentFolderDates) { [weak self] response in
                             // 【疑問】 [weak self] は必要？
-                            // 【曖昧】ここは必要そう？
                             guard let self = self else { return }
                             switch response {
                             case .success():
