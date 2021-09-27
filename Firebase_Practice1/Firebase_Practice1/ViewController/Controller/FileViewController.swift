@@ -33,7 +33,7 @@ final class FileViewController: UIViewController {
 
     // 【疑問】ここでの!は使わない方がいい？
     private var folderDate: FolderDate! // 選ばれたyearとmonthを使う用
-    // Int から [FileDate]に変更
+    // Int → [FileDate] → Int に変更
     private var addFileHandler: (Int) -> Void = { _ in }
     private var fileDates: [FileDate] = [] // folderDate内に[FileDate]のプロパティを作ったのそっちに変更 // やっぱりDBとして必要になった
 
@@ -43,10 +43,6 @@ final class FileViewController: UIViewController {
         super.viewWillAppear(animated)
 
         showCurrentFileDates()
-        // 【DB変更後】
-//        showCurrentFileDates(completion: { [weak self] in
-//            self?.tableView.reloadData()
-//        })
     }
 
     override func viewDidLoad() {
@@ -62,7 +58,7 @@ final class FileViewController: UIViewController {
 
 private extension FileViewController {
 
-    // 【曖昧】completion: (() -> Void)? = nilつけてtableView.reload()を楽にするか
+    // 今のところ、複数の非同期処理が折り合わないので引数としてcompletionを持たしてDispatchGroupを使わなくてもいい
     func showCurrentFileDates() {
         fileDateRepository.fetchFileDate(folderDate: self.folderDate) { [weak self] response in
             guard let self = self else { return }
@@ -75,32 +71,6 @@ private extension FileViewController {
                 FuncUtility.showErrorDialog(error: error, title: "データの読み込みに失敗しました", currentVC: self)
             }
         }
-
-
-//        FileDate.showFileDateForFirestore(folderDate: self.folderDate,
-//                                          completionAction: { (querySnapshot, error) in
-//                                            if let error = error {
-//                                                FuncUtility.showErrorDialog(error: error,
-//                                                                            title: "FileDateの取得失敗",
-//                                                                            currentVC: self)
-//                                                return
-//                                            }
-//                                            guard let querySnapshot = querySnapshot else { return }
-//                                            var fileDateArray: [FileDate] = []
-//                                            for doc in querySnapshot.documents {
-//                                                let fileDate = FileDate(doc: doc)
-//                                                fileDateArray.append(fileDate)
-//                                            }
-//                                            self.fileDates = fileDateArray
-////                                            print("self.fileDate.count: ", self.fileDates.count) // 非同期処理を考えた正確な最新データ
-//                                            self.addFileHandler(self.fileDates) // クロージャとして正しく値を渡せていない
-//
-//                                            guard let reloadHander = completion else { return }
-//                                            reloadHander()
-//
-//                                            // 【疑問】これ無限ループにはならないの？一回の負担が大きいと思うからできれば避けたい
-////                                            self.tableView.reloadData()
-//                                          })
     }
     
     func setupNC() {
@@ -167,15 +137,6 @@ private extension FileViewController {
                 }
             }
         }
-        // 【DB変更前】
-//        if self.folderDate.fileDates.count != 0 {
-//            for i in 0...self.folderDate.fileDates.count-1 {
-//                if day == self.folderDate.fileDates[i].day {
-//                    label.text = "※すでにファイルが存在します"
-//                    return
-//                }
-//            }
-//        }
         label.text = ""
     }
 }
@@ -250,14 +211,6 @@ private extension FileViewController {
                                         }
                                     }
                                 }
-                                // 【DB変更前】
-//                                if self.folderDate.fileDates.count != 0 {
-//                                    for i in 0...self.folderDate.fileDates.count-1 {
-//                                        if day == self.folderDate.fileDates[i].day {
-//                                            return
-//                                        }
-//                                    }
-//                                }
 
                                 // 【パターン①】
                                 let newFileDate = FileDate(year: year, month: month, day: day, week: String(week))
@@ -346,8 +299,6 @@ extension FileViewController: UITableViewDelegate {
 extension FileViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         self.fileDates.count
-        // 【DB変更前】
-//        folderDate.fileDates.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -356,8 +307,6 @@ extension FileViewController: UITableViewDataSource {
         }
         // 【DB変更後】
         fileCell.configure(fileDate: self.fileDates[indexPath.row])
-        // 【DB変更前】
-//        fileCell.configure(fileDate: folderDate.fileDates[indexPath.row])
         return fileCell
     }
 

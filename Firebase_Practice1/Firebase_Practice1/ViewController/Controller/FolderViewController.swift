@@ -38,8 +38,10 @@ final class FolderViewController: UIViewController {
         let dispatchGroup = DispatchGroup()
         dispatchGroup.enter()
         showCurrentFolderSections {
+            // tableView.reload()せずに先に終わらせることで効率化
             dispatchGroup.leave()
         }
+        // 【疑問】もう少し上手くクロージャのselfを扱いたい
         dispatchGroup.notify(queue: .main) { [weak self] in
             guard let self = self else { return }
             self.showCurrentFolderDates { [weak self] in
